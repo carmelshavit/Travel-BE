@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require('path');
 const mongodb = require("./database/mongodb.js");
 
 const express = require("express");
@@ -19,8 +20,11 @@ const app = express();
    })
  );
 
-app.use(require("cors")());
-app.use(express.json());
+ if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.resolve('build')))
+} else {
+  app.use(require('cors')())
+}app.use(express.json());
 
 app.use("/signup", require("./routes/users/signup.js"));
 app.use("/login", require("./routes/users/login.js"));
